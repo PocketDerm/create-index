@@ -2,12 +2,13 @@ import _ from 'lodash';
 
 const safeVariableName = (fileName) => {
   const indexOfDot = fileName.indexOf('.');
+  let safeFileName = fileName
 
-  if (indexOfDot === -1) {
-    return fileName;
-  } else {
-    return fileName.slice(0, indexOfDot);
+  if (indexOfDot !== -1) {
+    safeFileName = fileName.slice(0, indexOfDot);
   }
+
+  return _.upperFirst(_.camelCase(safeFileName));
 };
 
 const buildExportBlock = (files) => {
