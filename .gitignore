@@ -1,5 +1,7 @@
 coverage
-dist
+dist/utilities/
+dist/index.js
+dist/index.js.map
 node_modules
 *.log
 .*
