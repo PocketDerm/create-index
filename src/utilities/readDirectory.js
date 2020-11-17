@@ -102,7 +102,10 @@ export default (directoryPath, options = {}) => {
       return false;
     }
 
-    if (_.startsWith(fileName, options.outputFile || "index.js")) {
+    if (
+      _.startsWith(fileName, options.outputFile || "index.js") ||
+      _.startsWith(fileName, "index.ts")
+    ) {
       return false;
     }
 

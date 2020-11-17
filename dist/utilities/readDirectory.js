@@ -114,7 +114,7 @@ var _default = function _default(directoryPath) {
       return false;
     }
 
-    if (_lodash.default.startsWith(fileName, options.outputFile || "index.js")) {
+    if (_lodash.default.startsWith(fileName, options.outputFile || "index.js") || _lodash.default.startsWith(fileName, "index.ts")) {
       return false;
     }
 
