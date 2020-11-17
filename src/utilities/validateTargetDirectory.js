@@ -8,7 +8,7 @@ export default (targetDirectory, options = {}) => {
 
   try {
     stats = fs.statSync(targetDirectory);
-  } catch (error) {
+  } catch {
     if (silent) {
       return false;
     } else {
@@ -24,11 +24,11 @@ export default (targetDirectory, options = {}) => {
     }
   }
 
-  const indexFilePath = path.resolve(targetDirectory, './index.js');
+  const indexFilePath = path.resolve(targetDirectory, './' + (options.outputFile || 'index.js'));
 
   try {
     fs.statSync(indexFilePath);
-  } catch (error) {
+  } catch {
     return true;
   }
 
