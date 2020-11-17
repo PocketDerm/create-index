@@ -1,32 +1,31 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = void 0;
 
-var _fs = require('fs');
+var _fs = _interopRequireDefault(require("fs"));
 
-var _fs2 = _interopRequireDefault(_fs);
+var _path = _interopRequireDefault(require("path"));
 
-var _path = require('path');
+var _hasIndex = _interopRequireDefault(require("./hasIndex"));
 
-var _path2 = _interopRequireDefault(_path);
-
-var _hasIndex = require('./hasIndex');
-
-var _hasIndex2 = _interopRequireDefault(_hasIndex);
-
-var _constants = require('./constants');
+var _constants = require("./constants");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = directoryPath => {
-  if (!(0, _hasIndex2.default)(directoryPath)) {
+var _default = function _default(directoryPath) {
+  let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+  if (!(0, _hasIndex.default)(directoryPath, options)) {
     return {};
   }
 
-  const indexPath = _path2.default.resolve(directoryPath, 'index.js');
-  const indexContents = _fs2.default.readFileSync(indexPath, 'utf-8');
+  const indexPath = _path.default.resolve(directoryPath, options.outputFile || 'index.js');
+
+  const indexContents = _fs.default.readFileSync(indexPath, 'utf-8');
+
   const found = indexContents.match(_constants.CREATE_INDEX_PATTERN);
   const configLine = typeof found[1] === 'string' ? found[1].trim() : '';
 
@@ -38,10 +37,12 @@ exports.default = directoryPath => {
 
   try {
     config = JSON.parse(configLine);
-  } catch (error) {
+  } catch {
     throw new Error('"' + indexPath + '" contains invalid configuration object.\n' + 'Configuration object must be a valid JSON.');
   }
 
   return config;
 };
+
+exports.default = _default;
 //# sourceMappingURL=readIndexConfig.js.map

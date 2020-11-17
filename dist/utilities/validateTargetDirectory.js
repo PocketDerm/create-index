@@ -1,30 +1,26 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = void 0;
 
-var _fs = require('fs');
+var _fs = _interopRequireDefault(require("fs"));
 
-var _fs2 = _interopRequireDefault(_fs);
+var _path = _interopRequireDefault(require("path"));
 
-var _path = require('path');
-
-var _path2 = _interopRequireDefault(_path);
-
-var _constants = require('./constants');
+var _constants = require("./constants");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = function (targetDirectory) {
+var _default = function _default(targetDirectory) {
   let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
   const silent = options.silent;
   let stats;
 
   try {
-    stats = _fs2.default.statSync(targetDirectory);
-  } catch (error) {
+    stats = _fs.default.statSync(targetDirectory);
+  } catch {
     if (silent) {
       return false;
     } else {
@@ -40,15 +36,15 @@ exports.default = function (targetDirectory) {
     }
   }
 
-  const indexFilePath = _path2.default.resolve(targetDirectory, './index.js');
+  const indexFilePath = _path.default.resolve(targetDirectory, './' + (options.outputFile || 'index.js'));
 
   try {
-    _fs2.default.statSync(indexFilePath);
-  } catch (error) {
+    _fs.default.statSync(indexFilePath);
+  } catch {
     return true;
   }
 
-  const indexFile = _fs2.default.readFileSync(indexFilePath, 'utf8');
+  const indexFile = _fs.default.readFileSync(indexFilePath, 'utf8');
 
   if (!indexFile.match(_constants.CREATE_INDEX_PATTERN)) {
     if (silent) {
@@ -60,4 +56,6 @@ exports.default = function (targetDirectory) {
 
   return true;
 };
+
+exports.default = _default;
 //# sourceMappingURL=validateTargetDirectory.js.map
