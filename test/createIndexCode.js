@@ -45,7 +45,7 @@ export { default as Foo } from './foo';
         codeExample(`
 // @create-index
 
-export { default as Foo } from './foo.js';
+export { default as Foo } from './foo';
       `)
       );
     });

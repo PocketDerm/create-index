@@ -1,5 +1,5 @@
 // @create-index
 
 export { default as Bar } from './bar';
-export { default as Foo } from './foo.js';
+export { default as Foo } from './foo';
 
