@@ -1,8 +1,8 @@
-import fs from 'fs';
-import path from 'path';
-import _ from 'lodash';
-import hasIndex from './hasIndex';
-import validateTargetDirectory from './validateTargetDirectory';
+import fs from "fs";
+import path from "path";
+import _ from "lodash";
+import hasIndex from "./hasIndex";
+import validateTargetDirectory from "./validateTargetDirectory";
 
 const hasNoExtension = (fileName) => {
   const matches = fileName.match(/\./g);
@@ -17,23 +17,23 @@ const hasMultipleExtensions = (fileName) => {
 };
 
 const isSafeName = (fileName) => {
-  return /^[a-z][a-z0-9._-]+$/i.test(fileName);
+  return /^[_a-z][\w.]*$/i.test(fileName);
 };
 
 const stripExtension = (fileName) => {
-  const pos = fileName.lastIndexOf('.');
+  const pos = fileName.lastIndexOf(".");
 
   if (pos === -1) {
     return fileName;
   }
 
-  return fileName.substr(0, pos);
+  return fileName.slice(0, Math.max(0, pos));
 };
 
 const removeDuplicates = (files, preferredExtension) => {
   return _.filter(files, (fileName) => {
     const withoutExtension = stripExtension(fileName);
-    const mainAlternative = withoutExtension + '.' + preferredExtension;
+    const mainAlternative = withoutExtension + "." + preferredExtension;
 
     if (mainAlternative === fileName) {
       return true;
@@ -49,7 +49,7 @@ const removeIgnoredFiles = (files, ignorePatterns = []) => {
   }
 
   const patterns = ignorePatterns.map((pattern) => {
-    if (_.startsWith(pattern, '/') && _.endsWith(pattern, '/')) {
+    if (_.startsWith(pattern, "/") && _.endsWith(pattern, "/")) {
       const patternWithoutSlashes = pattern.slice(1, -1);
 
       return new RegExp(patternWithoutSlashes);
@@ -72,13 +72,14 @@ const removeIgnoredFiles = (files, ignorePatterns = []) => {
 };
 
 export default (directoryPath, options = {}) => {
-  if (!validateTargetDirectory(directoryPath, {silent: options.silent})) {
+  if (!validateTargetDirectory(directoryPath, options)) {
     return false;
   }
 
   const {
-    extensions = ['js'],
-    config = {}
+    extensions = ["js"],
+    config = {},
+    ignoreDirectories = false,
   } = options;
 
   let children;
@@ -101,17 +102,26 @@ export default (directoryPath, options = {}) => {
       return false;
     }
 
-    if (_.startsWith(fileName, 'index.js')) {
+    if (
+      _.startsWith(fileName, options.outputFile || "index.js") ||
+      _.startsWith(fileName, "index.ts")
+    ) {
       return false;
     }
 
-    if (!isDirectory && !extensions.some((ext) => {
-      return _.endsWith(fileName, '.' + ext);
-    })) {
+    if (
+      !isDirectory &&
+      !extensions.some((extension) => {
+        return _.endsWith(fileName, "." + extension);
+      })
+    ) {
       return false;
     }
 
-    if (isDirectory && !hasIndex(absolutePath)) {
+    if (
+      isDirectory &&
+      (!hasIndex(absolutePath, options) || ignoreDirectories)
+    ) {
       return false;
     }
 

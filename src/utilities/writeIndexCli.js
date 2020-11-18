@@ -16,6 +16,7 @@ export default (directoryPaths, options = {}) => {
   sortedDirectoryPaths = sortByDepth(directoryPaths);
 
   log('Target directories', sortedDirectoryPaths);
+  log('Output file', options.outputFile);
   if (options.updateIndex) {
     log('Update index:', options.updateIndex ? chalk.green('true') : chalk.red('false'));
   } else {
@@ -25,10 +26,10 @@ export default (directoryPaths, options = {}) => {
   }
 
   if (options.updateIndex || options.recursive) {
-    sortedDirectoryPaths = _.map(sortedDirectoryPaths, (dir) => {
-      return findIndexFiles(dir, {
-        fileName: options.updateIndex ? 'index.js' : '*',
-        silent: options.updateIndex || options.ignoreUnsafe
+    sortedDirectoryPaths = _.map(sortedDirectoryPaths, (directory) => {
+      return findIndexFiles(directory, {
+        fileName: options.updateIndex ? options.outputFile || 'index.js' : '*',
+        silent: options.updateIndex || options.ignoreUnsafe,
       });
     });
     sortedDirectoryPaths = _.flatten(sortedDirectoryPaths);
@@ -39,36 +40,38 @@ export default (directoryPaths, options = {}) => {
   }
 
   sortedDirectoryPaths = sortedDirectoryPaths.filter((directoryPath) => {
-    return validateTargetDirectory(directoryPath, {silent: options.ignoreUnsafe});
+    return validateTargetDirectory(directoryPath, {outputFile: options.outputFile,
+      silent: options.ignoreUnsafe});
   });
 
   _.forEach(sortedDirectoryPaths, (directoryPath) => {
     let existingIndexCode;
 
-    const config = readIndexConfig(directoryPath);
+    const config = readIndexConfig(directoryPath, options);
 
     const siblings = readDirectory(directoryPath, {
       config,
       extensions: options.extensions,
-      silent: options.ignoreUnsafe
+      ignoreDirectories: options.ignoreDirectories,
+      silent: options.ignoreUnsafe,
     });
 
     const indexCode = createIndexCode(siblings, {
       banner: options.banner,
-      config
+      config,
     });
 
-    const indexFilePath = path.resolve(directoryPath, 'index.js');
+    const indexFilePath = path.resolve(directoryPath, options.outputFile || 'index.js');
 
     try {
       existingIndexCode = fs.readFileSync(indexFilePath, 'utf8');
 
-        /* eslint-disable no-empty */
-    } catch (error) {
+      /* eslint-disable no-empty */
+    } catch {
 
     }
 
-        /* eslint-enable no-empty */
+    /* eslint-enable no-empty */
 
     fs.writeFileSync(indexFilePath, indexCode);
 

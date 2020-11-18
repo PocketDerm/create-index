@@ -36,8 +36,8 @@ This created `index.js` with:
 ```js
 // @create-index
 
-export { default as bar } from './bar.js';
-export { default as foo } from './foo.js';
+export { default as Bar } from './bar.js';
+export { default as Foo } from './foo.js';
 
 ```
 
@@ -66,9 +66,9 @@ This have updated `index.js` file:
 ```js
 // @create-index
 
-export { default as bar } from './bar.js';
+export { default as Bar } from './bar.js';
 export { default as baz } from './baz.js';
-export { default as foo } from './foo.js';
+export { default as Foo } from './foo.js';
 
 ```
 
@@ -82,21 +82,35 @@ npm install create-index
 create-index --help
 
 Options:
-  --recursive, -r     Create/update index files recursively. Halts on any unsafe
-                      "index.js" files.               [boolean] [default: false]
-  --ignoreUnsafe, -i  Ignores unsafe "index.js" files instead of halting.
+  --recursive, -r          Create/update index files recursively. Halts on any
+                           unsafe "index.js" files.   [boolean] [default: false]
+  --ignoreUnsafe, -i       Ignores unsafe "index.js" files instead of halting.
                                                       [boolean] [default: false]
-  --update, -u        Updates only previously created index files (recursively).
+  --ignoreDirectories, -d  Ignores importing directories into the index file,
+                           even if they have a safe "index.js".
                                                       [boolean] [default: false]
-  --banner            Add a custom banner at the top of the index file  [string]
+  --update, -u             Updates only previously created index files
+                           (recursively).             [boolean] [default: false]
+  --banner                 Add a custom banner at the top of the index file
+                                                                        [string]
+  --extensions, -x         Allows some extensions to be parsed as valid source.
+                           First extension will always be preferred to homonyms
+                           with another allowed extension.
+                                                       [array] [default: ["js"]]
+  --outputFile, -o         Output file            [string] [default: "index.js"]                                                      [array] [default: ["js"]]
 
 Examples:
-  create-index ./src ./src/utilities   Creates or updates an existing
-                                       create-index index file in the target
-                                       (./src, ./src/utilities) directories.
-  create-index --update ./src ./tests  Finds all create-index index files in the
-                                       target directories and descending
-                                       directories. Updates found index files.
+  create-index ./src ./src/utilities      Creates or updates an existing
+                                          create-index index file in the target
+                                          (./src, ./src/utilities) directories.
+  create-index --update ./src ./tests     Finds all create-index index files in
+                                          the target directories and descending
+                                          directories. Updates found index
+                                          files.
+  create-index ./src --extensions js jsx  Creates or updates an existing
+                                          create-index index file in the target
+                                          (./src) directory for both .js and
+                                          .jsx extensions.
 ```
 
 ### Using `create-index` Programmatically
@@ -177,8 +191,8 @@ Given the above directory contents, `./index.js` will be:
 ```js
 // @create-index
 
-import { default as bar } from './bar';
-import { default as foo } from './foo.js';
+import { default as Bar } from './bar';
+import { default as Foo } from './foo.js';
 
 export {
     bar,
@@ -219,8 +233,8 @@ Given the above directory contents, after running `create-index` with `--update`
 ```js
 // @create-index {"ignore": ["/baz.js$/"]}
 
-import { default as bar } from './bar.js';
-import { default as foo } from './foo.js';
+import { default as Bar } from './bar.js';
+import { default as Foo } from './foo.js';
 
 export {
     bar,

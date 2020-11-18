@@ -1,5 +1,5 @@
-import _ from 'lodash';
+import _ from "lodash";
 
-export default (code) => {
-  return _.trim(code) + '\n\n';
+export default (code, withTwoNewlines = false) => {
+  return _.trim(code) + `${withTwoNewlines ? "\n\n" : "\n"}`;
 };

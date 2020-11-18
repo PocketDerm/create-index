@@ -1,8 +1,8 @@
-import _ from 'lodash';
+import _ from "lodash";
 
 const safeVariableName = (fileName) => {
-  const indexOfDot = fileName.indexOf('.');
-  let safeFileName = fileName
+  const indexOfDot = fileName.indexOf(".");
+  let safeFileName = fileName;
 
   if (indexOfDot !== -1) {
     safeFileName = fileName.slice(0, indexOfDot);
@@ -15,10 +15,18 @@ const buildExportBlock = (files) => {
   let importBlock;
 
   importBlock = _.map(files, (fileName) => {
-    return 'export { default as ' + safeVariableName(fileName) + ' } from \'./' + fileName + '\';';
+    // Removes .ts for TypeScript compatibility
+    const nameWithoutExtension = fileName.replace(/\.[^.]*$/, "");
+    return (
+      "export { default as " +
+      safeVariableName(fileName) +
+      " } from './" +
+      nameWithoutExtension +
+      "';"
+    );
   });
 
-  importBlock = importBlock.join('\n');
+  importBlock = importBlock.join("\n");
 
   return importBlock;
 };
@@ -27,29 +35,32 @@ export default (filePaths, options = {}) => {
   let code;
   let configCode;
 
-  code = '';
-  configCode = '';
+  code = "";
+  configCode = "";
 
   if (options.banner) {
-    const banners = _.isArray(options.banner) ? options.banner : [options.banner];
+    const banners = _.isArray(options.banner)
+      ? options.banner
+      : [options.banner];
 
     banners.forEach((banner) => {
-      code += banner + '\n';
+      code += banner + "\n";
     });
 
-    code += '\n';
+    code += "\n";
   }
 
   if (options.config && _.size(options.config) > 0) {
-    configCode += ' ' + JSON.stringify(options.config);
+    configCode += " " + JSON.stringify(options.config);
   }
 
-  code += '// @create-index' + configCode + '\n\n';
+  code += "// @create-index" + configCode + "\n\n";
 
   if (filePaths.length) {
     const sortedFilePaths = filePaths.sort();
-
-    code += buildExportBlock(sortedFilePaths) + '\n\n';
+    // Add single new-line at end of file if there are exports for
+    // compatibility with prettier standard
+    code += buildExportBlock(sortedFilePaths) + "\n";
   }
 
   return code;

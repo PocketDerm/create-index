@@ -1,126 +1,105 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = void 0;
 
-var _fs = require('fs');
+var _fs = _interopRequireDefault(require("fs"));
 
-var _fs2 = _interopRequireDefault(_fs);
+var _path = _interopRequireDefault(require("path"));
 
-var _path = require('path');
+var _lodash = _interopRequireDefault(require("lodash"));
 
-var _path2 = _interopRequireDefault(_path);
+var _chalk = _interopRequireDefault(require("chalk"));
 
-var _lodash = require('lodash');
+var _createIndexCode = _interopRequireDefault(require("./createIndexCode"));
 
-var _lodash2 = _interopRequireDefault(_lodash);
+var _validateTargetDirectory = _interopRequireDefault(require("./validateTargetDirectory"));
 
-var _chalk = require('chalk');
+var _readDirectory = _interopRequireDefault(require("./readDirectory"));
 
-var _chalk2 = _interopRequireDefault(_chalk);
+var _readIndexConfig = _interopRequireDefault(require("./readIndexConfig"));
 
-var _createIndexCode = require('./createIndexCode');
+var _sortByDepth = _interopRequireDefault(require("./sortByDepth"));
 
-var _createIndexCode2 = _interopRequireDefault(_createIndexCode);
+var _log = _interopRequireDefault(require("./log"));
 
-var _validateTargetDirectory = require('./validateTargetDirectory');
-
-var _validateTargetDirectory2 = _interopRequireDefault(_validateTargetDirectory);
-
-var _readDirectory = require('./readDirectory');
-
-var _readDirectory2 = _interopRequireDefault(_readDirectory);
-
-var _readIndexConfig = require('./readIndexConfig');
-
-var _readIndexConfig2 = _interopRequireDefault(_readIndexConfig);
-
-var _sortByDepth = require('./sortByDepth');
-
-var _sortByDepth2 = _interopRequireDefault(_sortByDepth);
-
-var _log = require('./log');
-
-var _log2 = _interopRequireDefault(_log);
-
-var _findIndexFiles = require('./findIndexFiles');
-
-var _findIndexFiles2 = _interopRequireDefault(_findIndexFiles);
+var _findIndexFiles = _interopRequireDefault(require("./findIndexFiles"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = function (directoryPaths) {
+var _default = function _default(directoryPaths) {
   let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
   let sortedDirectoryPaths;
+  sortedDirectoryPaths = (0, _sortByDepth.default)(directoryPaths);
+  (0, _log.default)('Target directories', sortedDirectoryPaths);
+  (0, _log.default)('Output file', options.outputFile);
 
-  sortedDirectoryPaths = (0, _sortByDepth2.default)(directoryPaths);
-
-  (0, _log2.default)('Target directories', sortedDirectoryPaths);
   if (options.updateIndex) {
-    (0, _log2.default)('Update index:', options.updateIndex ? _chalk2.default.green('true') : _chalk2.default.red('false'));
+    (0, _log.default)('Update index:', options.updateIndex ? _chalk.default.green('true') : _chalk.default.red('false'));
   } else {
-    (0, _log2.default)('Recursive:', options.recursive ? _chalk2.default.green('true') : _chalk2.default.red('false'));
-    (0, _log2.default)('Ignore unsafe:', options.ignoreUnsafe ? _chalk2.default.green('true') : _chalk2.default.red('false'));
-    (0, _log2.default)('Extensions:', _chalk2.default.green(options.extensions));
+    (0, _log.default)('Recursive:', options.recursive ? _chalk.default.green('true') : _chalk.default.red('false'));
+    (0, _log.default)('Ignore unsafe:', options.ignoreUnsafe ? _chalk.default.green('true') : _chalk.default.red('false'));
+    (0, _log.default)('Extensions:', _chalk.default.green(options.extensions));
   }
 
   if (options.updateIndex || options.recursive) {
-    sortedDirectoryPaths = _lodash2.default.map(sortedDirectoryPaths, dir => {
-      return (0, _findIndexFiles2.default)(dir, {
-        fileName: options.updateIndex ? 'index.js' : '*',
+    sortedDirectoryPaths = _lodash.default.map(sortedDirectoryPaths, directory => {
+      return (0, _findIndexFiles.default)(directory, {
+        fileName: options.updateIndex ? options.outputFile || 'index.js' : '*',
         silent: options.updateIndex || options.ignoreUnsafe
       });
     });
-    sortedDirectoryPaths = _lodash2.default.flatten(sortedDirectoryPaths);
-    sortedDirectoryPaths = _lodash2.default.uniq(sortedDirectoryPaths);
-    sortedDirectoryPaths = (0, _sortByDepth2.default)(sortedDirectoryPaths);
-
-    (0, _log2.default)('Updating index files in:', sortedDirectoryPaths.reverse().join(', '));
+    sortedDirectoryPaths = _lodash.default.flatten(sortedDirectoryPaths);
+    sortedDirectoryPaths = _lodash.default.uniq(sortedDirectoryPaths);
+    sortedDirectoryPaths = (0, _sortByDepth.default)(sortedDirectoryPaths);
+    (0, _log.default)('Updating index files in:', sortedDirectoryPaths.reverse().join(', '));
   }
 
   sortedDirectoryPaths = sortedDirectoryPaths.filter(directoryPath => {
-    return (0, _validateTargetDirectory2.default)(directoryPath, { silent: options.ignoreUnsafe });
-  });
-
-  _lodash2.default.forEach(sortedDirectoryPaths, directoryPath => {
-    let existingIndexCode;
-
-    const config = (0, _readIndexConfig2.default)(directoryPath);
-
-    const siblings = (0, _readDirectory2.default)(directoryPath, {
-      config,
-      extensions: options.extensions,
+    return (0, _validateTargetDirectory.default)(directoryPath, {
+      outputFile: options.outputFile,
       silent: options.ignoreUnsafe
     });
+  });
 
-    const indexCode = (0, _createIndexCode2.default)(siblings, {
+  _lodash.default.forEach(sortedDirectoryPaths, directoryPath => {
+    let existingIndexCode;
+    const config = (0, _readIndexConfig.default)(directoryPath, options);
+    const siblings = (0, _readDirectory.default)(directoryPath, {
+      config,
+      extensions: options.extensions,
+      ignoreDirectories: options.ignoreDirectories,
+      silent: options.ignoreUnsafe
+    });
+    const indexCode = (0, _createIndexCode.default)(siblings, {
       banner: options.banner,
       config
     });
 
-    const indexFilePath = _path2.default.resolve(directoryPath, 'index.js');
+    const indexFilePath = _path.default.resolve(directoryPath, options.outputFile || 'index.js');
 
     try {
-      existingIndexCode = _fs2.default.readFileSync(indexFilePath, 'utf8');
-
+      existingIndexCode = _fs.default.readFileSync(indexFilePath, 'utf8');
       /* eslint-disable no-empty */
-    } catch (error) {}
-
+    } catch {}
     /* eslint-enable no-empty */
 
-    _fs2.default.writeFileSync(indexFilePath, indexCode);
+
+    _fs.default.writeFileSync(indexFilePath, indexCode);
 
     if (existingIndexCode && existingIndexCode === indexCode) {
-      (0, _log2.default)(indexFilePath, _chalk2.default.yellow('[index has not changed]'));
+      (0, _log.default)(indexFilePath, _chalk.default.yellow('[index has not changed]'));
     } else if (existingIndexCode && existingIndexCode !== indexCode) {
-      (0, _log2.default)(indexFilePath, _chalk2.default.green('[updated index]'));
+      (0, _log.default)(indexFilePath, _chalk.default.green('[updated index]'));
     } else {
-      (0, _log2.default)(indexFilePath, _chalk2.default.green('[created index]'));
+      (0, _log.default)(indexFilePath, _chalk.default.green('[created index]'));
     }
   });
 
-  (0, _log2.default)('Done');
+  (0, _log.default)('Done');
 };
+
+exports.default = _default;
 //# sourceMappingURL=writeIndexCli.js.map

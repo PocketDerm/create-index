@@ -1,51 +1,72 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.writeIndexCli = exports.writeIndex = exports.validateTargetDirectory = exports.sortByDepth = exports.readDirectory = exports.log = exports.findIndexFiles = exports.createIndexCode = undefined;
+Object.defineProperty(exports, "createIndexCode", {
+  enumerable: true,
+  get: function () {
+    return _createIndexCode2.default;
+  }
+});
+Object.defineProperty(exports, "findIndexFiles", {
+  enumerable: true,
+  get: function () {
+    return _findIndexFiles2.default;
+  }
+});
+Object.defineProperty(exports, "log", {
+  enumerable: true,
+  get: function () {
+    return _log2.default;
+  }
+});
+Object.defineProperty(exports, "readDirectory", {
+  enumerable: true,
+  get: function () {
+    return _readDirectory2.default;
+  }
+});
+Object.defineProperty(exports, "sortByDepth", {
+  enumerable: true,
+  get: function () {
+    return _sortByDepth2.default;
+  }
+});
+Object.defineProperty(exports, "validateTargetDirectory", {
+  enumerable: true,
+  get: function () {
+    return _validateTargetDirectory2.default;
+  }
+});
+Object.defineProperty(exports, "writeIndex", {
+  enumerable: true,
+  get: function () {
+    return _writeIndex2.default;
+  }
+});
+Object.defineProperty(exports, "writeIndexCli", {
+  enumerable: true,
+  get: function () {
+    return _writeIndexCli2.default;
+  }
+});
 
-var _createIndexCode2 = require('./createIndexCode.js');
+var _createIndexCode2 = _interopRequireDefault(require("./createIndexCode"));
 
-var _createIndexCode3 = _interopRequireDefault(_createIndexCode2);
+var _findIndexFiles2 = _interopRequireDefault(require("./findIndexFiles"));
 
-var _findIndexFiles2 = require('./findIndexFiles.js');
+var _log2 = _interopRequireDefault(require("./log"));
 
-var _findIndexFiles3 = _interopRequireDefault(_findIndexFiles2);
+var _readDirectory2 = _interopRequireDefault(require("./readDirectory"));
 
-var _log2 = require('./log.js');
+var _sortByDepth2 = _interopRequireDefault(require("./sortByDepth"));
 
-var _log3 = _interopRequireDefault(_log2);
+var _validateTargetDirectory2 = _interopRequireDefault(require("./validateTargetDirectory"));
 
-var _readDirectory2 = require('./readDirectory.js');
+var _writeIndex2 = _interopRequireDefault(require("./writeIndex"));
 
-var _readDirectory3 = _interopRequireDefault(_readDirectory2);
-
-var _sortByDepth2 = require('./sortByDepth.js');
-
-var _sortByDepth3 = _interopRequireDefault(_sortByDepth2);
-
-var _validateTargetDirectory2 = require('./validateTargetDirectory.js');
-
-var _validateTargetDirectory3 = _interopRequireDefault(_validateTargetDirectory2);
-
-var _writeIndex2 = require('./writeIndex.js');
-
-var _writeIndex3 = _interopRequireDefault(_writeIndex2);
-
-var _writeIndexCli2 = require('./writeIndexCli.js');
-
-var _writeIndexCli3 = _interopRequireDefault(_writeIndexCli2);
+var _writeIndexCli2 = _interopRequireDefault(require("./writeIndexCli"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.createIndexCode = _createIndexCode3.default; // @create-index
-
-exports.findIndexFiles = _findIndexFiles3.default;
-exports.log = _log3.default;
-exports.readDirectory = _readDirectory3.default;
-exports.sortByDepth = _sortByDepth3.default;
-exports.validateTargetDirectory = _validateTargetDirectory3.default;
-exports.writeIndex = _writeIndex3.default;
-exports.writeIndexCli = _writeIndexCli3.default;
 //# sourceMappingURL=index.js.map
