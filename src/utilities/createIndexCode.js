@@ -58,8 +58,9 @@ export default (filePaths, options = {}) => {
 
   if (filePaths.length) {
     const sortedFilePaths = filePaths.sort();
-
-    code += buildExportBlock(sortedFilePaths) + "\n\n";
+    // Add single new-line at end of file if there are exports for
+    // compatibility with prettier standard
+    code += buildExportBlock(sortedFilePaths) + "\n";
   }
 
   return code;

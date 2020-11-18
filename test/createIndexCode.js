@@ -9,9 +9,12 @@ describe("createIndexCode()", () => {
     const indexCode = createIndexCode([]);
 
     expect(indexCode).to.equal(
-      codeExample(`
+      codeExample(
+        `
 // @create-index
-    `)
+    `,
+        true
+      )
     );
   });
   it("describes a single child", () => {
@@ -21,8 +24,7 @@ describe("createIndexCode()", () => {
       codeExample(`
 // @create-index
 
-export { default as Foo } from './foo';
-    `)
+export { default as Foo } from './foo';`)
     );
   });
   it("describes multiple children", () => {
@@ -33,8 +35,7 @@ export { default as Foo } from './foo';
 // @create-index
 
 export { default as Bar } from './bar';
-export { default as Foo } from './foo';
-    `)
+export { default as Foo } from './foo';`)
     );
   });
   context("file with extension", () => {
@@ -45,8 +46,7 @@ export { default as Foo } from './foo';
         codeExample(`
 // @create-index
 
-export { default as Foo } from './foo';
-      `)
+export { default as Foo } from './foo';`)
       );
     });
   });
@@ -59,8 +59,7 @@ export { default as Foo } from './foo';
 // @create-index
 
 export { default as Bar } from './bar';
-export { default as Foo } from './foo';
-      `)
+export { default as Foo } from './foo';`)
       );
     });
   });
@@ -77,8 +76,7 @@ export { default as Foo } from './foo';
 // @create-index {"ignore":["/^zoo/"]}
 
 export { default as Bar } from './bar';
-export { default as Foo } from './foo';
-      `)
+export { default as Foo } from './foo';`)
       );
     });
   });

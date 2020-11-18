@@ -53,8 +53,10 @@ var _default = function _default(filePaths) {
   code += "// @create-index" + configCode + "\n\n";
 
   if (filePaths.length) {
-    const sortedFilePaths = filePaths.sort();
-    code += buildExportBlock(sortedFilePaths) + "\n\n";
+    const sortedFilePaths = filePaths.sort(); // Add single new-line at end of file if there are exports for
+    // compatibility with prettier standard
+
+    code += buildExportBlock(sortedFilePaths) + "\n";
   }
 
   return code;
